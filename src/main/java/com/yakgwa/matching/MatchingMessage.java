@@ -1,7 +1,5 @@
 package com.yakgwa.matching;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -21,9 +19,9 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class MatchingMessage {
-    private List<Member> members = new ArrayList<>();
+    private List<MatchingMemberDto> matchingMembers = new ArrayList<>();
 
-    public MatchingMessage(List<Member> members) {
-        this.members = members;
+    public MatchingMessage(List<MatchingMemberDto> members) {
+        this.matchingMembers= members;
     }
 }

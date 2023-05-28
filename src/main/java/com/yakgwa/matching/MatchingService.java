@@ -1,7 +1,6 @@
 package com.yakgwa.matching;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +17,7 @@ public class MatchingService {
     Random random = new Random();
     private static final int PARTIAL_MINIMUM_SIZE = 2;
     private static final int TOTAL_MINIMUM_SIZE = 6;
-    List<Member> tmp = new ArrayList<>();
+    List<MatchingMemberDto> tmp = new ArrayList<>();
 
 
     /**
@@ -56,13 +55,13 @@ public class MatchingService {
             women.add(id);
         }
 
-        List<Member> members = matching();
-        if (members != null) {
+        List<MatchingMemberDto> matchingMembers = matching();
+        if (matchingMembers != null) {
             System.out.println("매칭 완료");
             System.out.println("RabbitMQ로 매칭된 정보 보내기");
-            sendMatchingMessage(new MatchingMessage(members));
-            for (int i = 0; i < members.size(); i++) {
-                System.out.println("members.get(i) = " + members.get(i));
+            sendMatchingMessage(new MatchingMessage(matchingMembers));
+            for (int i = 0; i < matchingMembers.size(); i++) {
+                System.out.println("matchingMembers.get(i) = " + matchingMembers.get(i));
             }
         }
     }
@@ -85,10 +84,10 @@ public class MatchingService {
         return true;
     }
 
-    private List<Member> matching() {
+    private List<MatchingMemberDto> matching() {
         System.out.println("매칭 서비스 - 매칭(내부 함수) 시작");
 
-        List<Member> members = new ArrayList<>();
+        List<MatchingMemberDto> matchingMembers = new ArrayList<>();
 
         // 조건 검사
         if (!validate()) {
@@ -97,28 +96,28 @@ public class MatchingService {
 
         // 남자 2명
         for (int m = 0; m < 2; m++) {
-            members.add(new Member(men.remove(), Gender.M));
+            matchingMembers.add(new MatchingMemberDto(men.remove(), Gender.M));
         }
 
         // 여자 2명
         for (int w = 0; w < 2; w++) {
-            members.add(new Member(women.remove(), Gender.W));
+            matchingMembers.add(new MatchingMemberDto(women.remove(), Gender.W));
         }
 
         // 나머지 인원 추가
-        while (members.size() < TOTAL_MINIMUM_SIZE) {
+        while (matchingMembers.size() < TOTAL_MINIMUM_SIZE) {
             int number = random.nextInt(2);
             // 남자
             if (number == 0 && men.size() > 0) {
-                members.add(new Member(men.remove(), Gender.M));
+                matchingMembers.add(new MatchingMemberDto(men.remove(), Gender.M));
             }
             // 여자
             else if (number == 1 && women.size() > 0) {
-                members.add(new Member(women.remove(), Gender.W));
+                matchingMembers.add(new MatchingMemberDto(women.remove(), Gender.W));
             }
         }
 
-        return members;
+        return matchingMembers;
     }
 
     public void sendMatchingMessage(MatchingMessage matchingMessage) {
