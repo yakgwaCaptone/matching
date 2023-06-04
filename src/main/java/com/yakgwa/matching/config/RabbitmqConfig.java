@@ -26,8 +26,8 @@ public class RabbitmqConfig {
     //Queue 이름
     static final String queueName = "matching.queue";
 
-    @Value("${spring.rabbitmq.uri}")
-    private String uri;
+//    @Value("${spring.rabbitmq.uri}")
+//    private String uri;
     @Value("${spring.rabbitmq.host}")
     private String host;
 
@@ -65,9 +65,9 @@ public class RabbitmqConfig {
     @Bean
     ConnectionFactory connectionFactory() {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
-//        connectionFactory.setHost(host);
-//        connectionFactory.setPort(port);
-        connectionFactory.setUri(uri);
+        connectionFactory.setHost(host);
+        connectionFactory.setPort(port);
+//        connectionFactory.setUri(uri); // aws 연결시 사용했음. 지금은 rabbitmq ec2 따로
         connectionFactory.setUsername(username);
         connectionFactory.setPassword(password);
         return connectionFactory;

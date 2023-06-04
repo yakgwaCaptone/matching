@@ -49,9 +49,11 @@ public class MatchingService {
 
         // 매칭 대기 큐에 추가
         if (gender == Gender.M) {
+            for (; men.remove(id); ) ; // 만약 기존에 매칭 신청했으면 삭제 후 다시 추가
             men.add(id);
         }
         else if (gender == Gender.W) {
+            for (; women.remove(id);) ; // 만약 기존에 매칭 신청했으면 삭제 후 다시 추가
             women.add(id);
         }
 
