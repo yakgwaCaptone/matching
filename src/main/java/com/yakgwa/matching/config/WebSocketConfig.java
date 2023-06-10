@@ -18,8 +18,15 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
+        //config.enableSimpleBroker("/topic");
         config.setApplicationDestinationPrefixes("/pub"); // /pub 으로 시작하는 도착지 처리 -> 컨트롤러에서 받음
+
+        config.enableStompBrokerRelay("/topic")
+                .setRelayHost("13.209.204.63")
+                .setRelayPort(61613)
+                .setVirtualHost("/")
+                .setClientLogin("guest")
+                .setClientPasscode("guest");
     }
 
     @Override

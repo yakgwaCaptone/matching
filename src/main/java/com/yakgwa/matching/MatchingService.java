@@ -2,6 +2,8 @@ package com.yakgwa.matching;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -126,5 +128,6 @@ public class MatchingService {
         System.out.println("MatchingService.sendMatchingMessage");
         rabbitTemplate.convertAndSend("matching.exchange", "matching.key", matchingMessage);
     }
+
 
 }

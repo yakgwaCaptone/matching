@@ -1,6 +1,10 @@
 package com.yakgwa.matching.config;
 
 
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.TopicExchange;
@@ -13,6 +17,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.amqp.core.Queue;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.ui.Model;
+import org.springframework.util.StreamUtils;
 
 /**
  * 참고
@@ -45,6 +51,7 @@ public class RabbitmqConfig {
         return new Queue(queueName, false);
     }
 
+
     @Bean
     TopicExchange exchange() {
         return new TopicExchange(topicExchangeName);
@@ -74,7 +81,16 @@ public class RabbitmqConfig {
     }
 
     @Bean
-    MessageConverter messageConverter() {
-        return new Jackson2JsonMessageConverter();
+    public Module dateTimeModule(){
+        return new JavaTimeModule();
     }
+    @Bean
+    MessageConverter messageConverter() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS, true);
+        objectMapper.registerModule(dateTimeModule());
+        return new Jackson2JsonMessageConverter(objectMapper);
+    }
+
+
 }
